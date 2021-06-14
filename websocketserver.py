@@ -1,0 +1,68 @@
+"""
+weboketserver module is the logic of the server for responding to requests, 3 functions are written here content,
+handle and running_func
+"""
+import websockets
+import logging
+import datetime
+import datetime as dt
+import asyncio
+from pyngrok import ngrok
+import constants
+from moon import Moon
+import  ephem
+
+logging.basicConfig(level=logging.INFO)
+
+
+async def message_for_sent(cur_time: datetime.datetime) -> str:
+    """
+    it is an asynchronous function designed to process the content of the request response
+    """
+    obj = Moon(cur_time)
+    moon_ra_dec = obj.ra_dec_calculate()
+    ep_moon = ephem.Moon()
+    ep_moon.compute()
+    ep_ra = ep_moon.ra
+    ep_dec = ep_moon.dec
+    ra = moon_ra_dec['ra']
+    dec = moon_ra_dec['dec']
+    moon_ra_dec = f'moon ra is a {ra} -- moon dec is a {dec} \n moon ep_ra is {ep_ra}-- moon ep_dec is {ep_dec}'
+    return moon_ra_dec
+
+
+async def handle(ws: websockets.WebSocketServerProtocol, path) -> None:
+    """
+    this is an asynchronous function for processing a request that returns content on a request
+    response periodically every 10 seconds
+    """
+    try:
+        logging.info(f'{ws.remote_address} -- connected')
+        while True:
+            curr_time = dt.datetime.now()
+            moon_ra_dec = await message_for_sent(curr_time)
+            await ws.send(moon_ra_dec)
+            for sec in range(constants.time_sleap):
+                await ws.send('')
+                await asyncio.sleep(1)
+    except websockets.ConnectionClosedError:
+        logging.info(f'{ws.remote_address} -- disconnected')
+    except websockets.ConnectionClosedOK:
+        logging.info(f'{ws.remote_address} -- disconnected, the client closed the browser')
+
+
+def function_to_start_the_server(ip: str, prt: int) -> None:
+    """
+    this is a function for starting the server, during startup the function automatically
+    makes the localhost public using pyngrok
+    """
+    try:
+        ngrok_tunnel = ngrok.connect(prt)
+        ngrok_tunnel_name = f'{ngrok_tunnel.public_url}'[7:]
+        logging.info(f'ngrok tunnel with http protocol is: {ngrok_tunnel.public_url}')
+        logging.info(f' ngrok tunnel with ws protocol is: ws://{ngrok_tunnel_name}')
+        start_server = websockets.serve(handle, ip, prt)
+        asyncio.get_event_loop().run_until_complete(start_server)
+        asyncio.get_event_loop().run_forever()
+    except KeyboardInterrupt:
+        logging.info('the server was down')
