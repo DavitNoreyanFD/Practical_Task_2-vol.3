@@ -34,7 +34,7 @@ class Moon:
         # the size of the angle of the maximum and minimum declination of the moon
         self.dec_angle_slope_interval = 4 * self.angle_slope
         # rough calculation of the change in the ra coordinate in one second
-        self.one_sec_walk_ra = math.cos(self.angle_slope) * self.one_sec_walk
+        self.one_sec_walk_ra = self.one_sec_walk
         # rough calculation of the change in the dec coordinate in one second
         self.one_sec_walk_dec = self.dec_angle_slope_interval / self.period_for_on_cycle
         # the epham package is used to take the starting coordinates of the moon for calculation
@@ -45,10 +45,8 @@ class Moon:
         self.ra_start_list = str(self.ra_ephem_start).split(':')
         self.dec_start_list = str(self.dec_ephem_start).split(':')
         # RA coordinates when the moon deflection reaches its maximum and minimum values
-        self.ra_dec_min = constants.ra_dec_min
-        self.ra_dec_max = constants.ra_dec_max
-        self.ra_dec_min_list = self.ra_dec_min.split(':')
-        self.ra_dec_max_list = self.ra_dec_max.split(':')
+        self.ra_dec_min_list = constants.ra_dec_min.split(':')
+        self.ra_dec_max_list = constants.ra_dec_max.split(':')
         # converting the coordinates of the moon to seconds for calculations
         self.ra_start = float(self.ra_start_list[0]) * 3600 * 15 + float(self.ra_start_list[1]) * 60 + float(
             self.ra_start_list[2])
@@ -82,11 +80,13 @@ class Moon:
                 self.dec_start = self.dec
 
         ra_res = f'{int(self.ra // (3600 * 15))}:{int((self.ra % 3600) // 60)}:' \
-                 f'{round(float((self.ra % 3600) % 60), 1)}'
+                 f'{round(float((self.ra % 3600) % 60), 2)}'
         dec_res = f'{int(self.dec // 3600)}:{int((self.dec % 3600) // 60)}:' \
-                  f'{round(float((self.dec % 3600) % 60), 1)}'
+                  f'{round(float((self.dec % 3600) % 60), 2)}'
         moon = {
             'ra': ra_res,
             'dec': dec_res
         }
         return moon
+
+

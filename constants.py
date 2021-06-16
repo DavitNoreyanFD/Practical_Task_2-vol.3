@@ -13,8 +13,8 @@ port = int(config['SERVER']['port'])
 
 # all constants for calculating the coordinates of the moon
 angle_slope = 102888.0  # seconds
-period_for_on_cycle = 2358720.0  # seconds
-perimeter = 1296000  # seconds
+period_for_on_cycle = 27.3 * 24 * 3600  # seconds
+perimeter = 360 * 3600  # seconds
 ra_dec_min = '6:45:48.54'
 ra_dec_max = '18:45:48.54'
-start_date = '2021/6/3 23:59:59'
+start_date = '2021/6/15 23:59:59'

@@ -4,30 +4,25 @@ handle and running_func
 """
 import websockets
 import logging
-import datetime
 import datetime as dt
 import asyncio
 from pyngrok import ngrok
 import constants
 from moon import Moon
-import  ephem
+
 
 logging.basicConfig(level=logging.INFO)
 
 
-async def message_for_sent(cur_time: datetime.datetime) -> str:
+async def message_for_sent(cur_time: dt.datetime) -> str:
     """
     it is an asynchronous function designed to process the content of the request response
     """
     obj = Moon(cur_time)
     moon_ra_dec = obj.ra_dec_calculate()
-    ep_moon = ephem.Moon()
-    ep_moon.compute()
-    ep_ra = ep_moon.ra
-    ep_dec = ep_moon.dec
     ra = moon_ra_dec['ra']
     dec = moon_ra_dec['dec']
-    moon_ra_dec = f'moon ra is a {ra} -- moon dec is a {dec} \n moon ep_ra is {ep_ra}-- moon ep_dec is {ep_dec}'
+    moon_ra_dec = f'moon ra is a {ra} -- moon dec is a {dec}'
     return moon_ra_dec
 
 
