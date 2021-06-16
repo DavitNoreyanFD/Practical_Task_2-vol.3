@@ -4,7 +4,6 @@ the calculations are not very accurate since a circle instead of an ellipse is t
 the moon's rotation around the earth, which in turn causes some inaccuracies
 """
 import datetime as dt
-import math
 import ephem
 import constants
 
@@ -88,5 +87,3 @@ class Moon:
             'dec': dec_res
         }
         return moon
-
-

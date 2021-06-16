@@ -37,7 +37,7 @@ async def handle(ws: websockets.WebSocketServerProtocol, path) -> None:
             curr_time = dt.datetime.now()
             moon_ra_dec = await message_for_sent(curr_time)
             await ws.send(moon_ra_dec)
-            for sec in range(constants.time_sleap):
+            for sec in range(constants.time_sleep):
                 await ws.send('')
                 await asyncio.sleep(1)
     except websockets.ConnectionClosedError:

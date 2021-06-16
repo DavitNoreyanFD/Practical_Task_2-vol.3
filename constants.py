@@ -7,7 +7,7 @@ import configparser
 # the port of the server and the delay time between server responses
 config = configparser.ConfigParser()
 config.read('config.ini')
-time_sleap = int(config['SERVER']['time_sleap'])
+time_sleep = int(config['SERVER']['time_sleep'])
 ip = config['SERVER']['ip']
 port = int(config['SERVER']['port'])
 
